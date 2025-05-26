@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import { makeController } from "./Controller";
 import { loginRequest } from "./requests/loginRequest";
+import { registerRequest } from "./requests/registerRequest";
 import Airtable from "airtable";
 import session from "express-session";
 //@ts-ignore
@@ -116,6 +117,49 @@ app.post(
       res.status(500).json({ message: "An error occurred during login" });
     }
   }, loginRequest)
+);
+
+app.post(
+  "/register",
+  makeController(async (req, res) => {
+    try {
+      const { username, email, password } = req.payload;
+
+      // Check if user already exists
+      const existingEmail = await userRepository.findByEmail({ email });
+      if (existingEmail) {
+        return res.status(409).json({ message: "Email already registered" });
+      }
+
+      const existingUsername = await userRepository.findByUsername({
+        username,
+      });
+      if (existingUsername) {
+        return res.status(409).json({ message: "Username already taken" });
+      }
+
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Create the user
+      const newUser = await userRepository.create({
+        Username: username,
+        Email: email,
+        Password: hashedPassword,
+      });
+
+      // Set the session
+      req.session.user = newUser;
+
+      // Return the user without password
+      res.status(201).json(hidePassword(newUser));
+    } catch (e) {
+      console.error(e);
+      res
+        .status(500)
+        .json({ message: "An error occurred during registration" });
+    }
+  }, registerRequest)
 );
 
 app.post(
