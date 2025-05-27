@@ -25,9 +25,18 @@ export enum Intolerance {
   Nightshades = "Nightshades",
 }
 
+export interface NutritionalValues {
+  calories: number;
+  protein: number;
+  carbohydrates: number;
+  fat: number;
+  vitamins: Record<string, number>;
+  minerals: Record<string, number>;
+}
+
 export interface Ingredient {
   Name: string;
   Category: IngredientCategory;
-  NutritionalValues: string;
+  NutritionalValues: NutritionalValues;
   Intolerances: Intolerance[];
 }

@@ -3,11 +3,14 @@ import bcrypt from "bcrypt";
 import { makeController } from "./Controller";
 import { loginRequest } from "./requests/loginRequest";
 import { registerRequest } from "./requests/registerRequest";
+import { ingredientRequest } from "./requests/ingredientRequest";
 import Airtable from "airtable";
 import session from "express-session";
 //@ts-ignore
 import fileStore from "session-file-store";
 import { AirtableUserRepository } from "../airtable/AirtableUserRepository";
+import { AirtableIngredientRepository } from "../airtable/AirtableIngredientRepository";
+import { Ingredient } from "../entities/Ingredient";
 import { hidePassword, User } from "../entities/User";
 import { PaginatedCollection } from "../types/PaginatedCollection";
 import { AirtableResult } from "../airtable/AirtableResult";
@@ -36,6 +39,7 @@ if (!apiKey || !baseId)
 export const app = express();
 const base = new Airtable({ apiKey }).base(baseId);
 const userRepository = new AirtableUserRepository(base);
+const ingredientRepository = new AirtableIngredientRepository(base);
 
 /**
  * --- MIDLEWARES ---
@@ -172,4 +176,47 @@ app.post(
       message: "Cache cleared",
     });
   })
+);
+
+// Ingredients routes
+app.get(
+  "/ingredients/:name",
+  makeController(async (req, res) => {
+    const { name } = req.params;
+    if (!name) {
+      return res.status(400).json({ message: "Name parameter is required" });
+    }
+
+    try {
+      const ingredient = await ingredientRepository.findByName({ name });
+      if (!ingredient) {
+        return res.status(404).json({ message: "Ingredient not found" });
+      }
+      res.json(ingredient);
+    } catch (error) {
+      console.error("Error finding ingredient by name:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  })
+);
+
+app.post(
+  "/ingredients",
+  makeController(async (req, res) => {
+    const ingredient: Ingredient = {
+      ...req.payload,
+      Intolerances: req.payload.Intolerances || [],
+    };
+    if (!ingredient || !ingredient.Name) {
+      return res.status(400).json({ message: "Invalid ingredient data" });
+    }
+
+    try {
+      const createdIngredient = await ingredientRepository.create(ingredient);
+      res.status(201).json(createdIngredient);
+    } catch (error) {
+      console.error("Error creating ingredient:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }, ingredientRequest)
 );

@@ -8,10 +8,19 @@ import { AirtableResult } from "./AirtableResult";
 import { z } from "zod";
 import { AbstractAirtableRepository } from "./AbstractAirtableRepository";
 
+const nutritionalValuesSchema = z.object({
+  calories: z.number(),
+  protein: z.number(),
+  carbohydrates: z.number(),
+  fat: z.number(),
+  vitamins: z.record(z.string(), z.number()),
+  minerals: z.record(z.string(), z.number()),
+});
+
 const fieldSchema = z.object({
   Name: z.string().min(1).max(100),
   Category: z.nativeEnum(IngredientCategory),
-  NutritionalValues: z.string().optional(),
+  NutritionalValues: z.string(),
   Intolerances: z.array(z.nativeEnum(Intolerance)).optional(),
 });
 
@@ -56,7 +65,7 @@ export class AirtableIngredientRepository
       const record = await this.getTable().create({
         Name: ingredient.Name,
         Category: ingredient.Category,
-        NutritionalValues: ingredient.NutritionalValues,
+        NutritionalValues: JSON.stringify(ingredient.NutritionalValues), // serialize
         Intolerances: ingredient.Intolerances,
       });
       return this.convertToIngredient(this.validate(record));
@@ -74,7 +83,10 @@ export class AirtableIngredientRepository
       _airtableId: id,
       Name: fields.Name,
       Category: fields.Category,
-      NutritionalValues: fields.NutritionalValues || "",
+      NutritionalValues:
+        typeof fields.NutritionalValues === "string"
+          ? JSON.parse(fields.NutritionalValues)
+          : fields.NutritionalValues,
       Intolerances: fields.Intolerances || [],
     };
   }
