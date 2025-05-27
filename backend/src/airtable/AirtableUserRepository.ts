@@ -7,7 +7,7 @@ import { AbstractAirtableRepository } from "./AbstractAirtableRepository";
 const fieldSchema = z.object({
   Username: z.string().min(3).max(20),
   Email: z.string().email(),
-  Password: z.string().min(8).max(22),
+  Password: z.string().min(8),
 });
 
 export class AirtableUserRepository
