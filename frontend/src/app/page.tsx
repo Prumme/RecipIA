@@ -1,6 +1,14 @@
 import RecipeCard from "@/components/RecipeCard";
 import type { Recipe } from "@/components/RecipeCard";
-import { Users, Clock, ChefHat, Tags } from "lucide-react";
+import {
+  Users,
+  Clock,
+  ChefHat,
+  Tags,
+  Sparkles,
+  Bot,
+  Shuffle,
+} from "lucide-react";
 
 const mockRecipes: Recipe[] = [
   {
@@ -51,12 +59,28 @@ const gridClassName =
 
 export default function Home() {
   return (
-    <div className="min-h-screen px-4">
-      <header className="mb-8 text-center py-8">
-        <h1 className="text-3xl font-bold mb-4">Nos Recettes</h1>
-        <p className="text-gray-600">
-          Découvrez notre sélection de recettes délicieuses
-        </p>
+    <div className="min-h-screen px-4 pt-16">
+      <header className="mb-8 py-8 max-w-[90%] mx-auto">
+        <div className="flex items-center gap-2 mb-2">
+          <Bot className="text-primary" size={28} />
+          <Sparkles className="text-primary" size={28} />
+        </div>
+        <h1 className="text-4xl font-bold mb-4">Our Recipes</h1>
+        <div className="max-w-2xl space-y-4">
+          <p className="text-gray-600">
+            Discover our curated collection of delicious recipes, powered by AI
+            technology
+          </p>
+          <p className="text-gray-600">
+            Your favorite platform for AI-generated recipes. Whether you're a
+            seasoned chef or a cooking enthusiast, let our intelligent system
+            inspire your next culinary masterpiece.
+          </p>
+          <button className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
+            <Shuffle size={20} />
+            Get Random Recipe
+          </button>
+        </div>
       </header>
 
       <main className="max-w-[90%] mx-auto">

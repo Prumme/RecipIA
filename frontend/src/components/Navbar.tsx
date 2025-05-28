@@ -3,14 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogIn, LogOut, Book, ChefHat } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
-interface NavbarProps {
-  isAuthenticated: boolean;
-  onLogout?: () => void;
-}
-
-export default function Navbar({ isAuthenticated, onLogout }: NavbarProps) {
+export default function Navbar() {
   const pathname = usePathname();
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -37,17 +34,17 @@ export default function Navbar({ isAuthenticated, onLogout }: NavbarProps) {
                 }`}
               >
                 <Book className="h-5 w-5" />
-                <span>Mes Recettes</span>
+                <span>My Recipes</span>
               </Link>
             )}
 
             {isAuthenticated ? (
               <button
-                onClick={onLogout}
+                onClick={logout}
                 className="flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-colors duration-200"
               >
                 <LogOut className="h-5 w-5" />
-                <span>Déconnexion</span>
+                <span>Logout</span>
               </button>
             ) : (
               <Link
@@ -55,7 +52,7 @@ export default function Navbar({ isAuthenticated, onLogout }: NavbarProps) {
                 className="flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium text-white bg-primary hover:bg-primary-hover transition-colors duration-200"
               >
                 <LogIn className="h-5 w-5" />
-                <span>Connexion</span>
+                <span>Login</span>
               </Link>
             )}
           </div>

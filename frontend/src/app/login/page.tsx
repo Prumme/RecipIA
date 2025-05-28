@@ -1,16 +1,32 @@
 "use client";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
+  const { login } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implémenter la logique de connexion
-    console.log("Login attempt:", { email, password });
+    setError("");
+    setIsLoading(true);
+
+    try {
+      await login({ email, password });
+      router.push("/");
+    } catch (error) {
+      setError("Identifiants incorrects. Veuillez réessayer.");
+      console.error("Erreur de connexion:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -31,6 +47,11 @@ export default function LoginPage() {
               </Link>
             </p>
           </div>
+          {error && (
+            <div className="mt-4 p-3 bg-red-50 text-red-500 rounded-md text-sm">
+              {error}
+            </div>
+          )}
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
@@ -96,9 +117,10 @@ export default function LoginPage() {
             <div>
               <button
                 type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover transition duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/90"
+                disabled={isLoading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover transition duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Se connecter
+                {isLoading ? "Connexion en cours..." : "Se connecter"}
               </button>
             </div>
           </form>

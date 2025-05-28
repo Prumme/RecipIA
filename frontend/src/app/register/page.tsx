@@ -2,16 +2,35 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const { register } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implémenter la logique d'inscription
-    console.log("Register attempt:", { email, password, username });
+    setError("");
+    setIsLoading(true);
+
+    try {
+      await register({ email, password, username });
+      router.push("/recipe"); // Redirection vers la page des recettes après inscription réussie
+    } catch (error: any) {
+      setError(
+        error.message ||
+          "Une erreur est survenue lors de l'inscription. Veuillez réessayer."
+      );
+      console.error("Erreur d'inscription:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -32,6 +51,11 @@ export default function RegisterPage() {
               </Link>
             </p>
           </div>
+          {error && (
+            <div className="mt-4 p-3 bg-red-50 text-red-500 rounded-md text-sm">
+              {error}
+            </div>
+          )}
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
@@ -47,6 +71,7 @@ export default function RegisterPage() {
                   placeholder="Nom d'utilisateur"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
               <div>
@@ -63,6 +88,7 @@ export default function RegisterPage() {
                   placeholder="Adresse email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
               <div>
@@ -79,6 +105,7 @@ export default function RegisterPage() {
                   placeholder="Mot de passe"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -86,9 +113,10 @@ export default function RegisterPage() {
             <div>
               <button
                 type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover transition duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/90"
+                disabled={isLoading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover transition duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                S'inscrire
+                {isLoading ? "Inscription en cours..." : "S'inscrire"}
               </button>
             </div>
           </form>

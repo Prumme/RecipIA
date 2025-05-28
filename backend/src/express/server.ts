@@ -49,7 +49,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN || "http://localhost:3001",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
@@ -108,11 +108,13 @@ app.post(
       const { password, email } = req.payload;
       const user = await userRepository.findByEmail({ email });
       if (!user)
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res.status(401).json({ message: "Invalid credentials (email)" });
 
       const isPasswordValid = await bcrypt.compare(password, user.Password);
       if (!isPasswordValid) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res
+          .status(401)
+          .json({ message: "Invalid credentials (password)" });
       }
       req.session.user = user;
       res.json(hidePassword(user));
