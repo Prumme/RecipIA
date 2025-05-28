@@ -8,14 +8,14 @@ import { AirtableResult } from "./AirtableResult";
 import { z } from "zod";
 import { AbstractAirtableRepository } from "./AbstractAirtableRepository";
 
-const nutritionalValuesSchema = z.object({
-  calories: z.number(),
-  protein: z.number(),
-  carbohydrates: z.number(),
-  fat: z.number(),
-  vitamins: z.record(z.string(), z.number()),
-  minerals: z.record(z.string(), z.number()),
-});
+//const nutritionalValuesSchema = z.object({
+//  calories: z.number(),
+//  protein: z.number(),
+//  carbohydrates: z.number(),
+//  fat: z.number(),
+//  vitamins: z.record(z.string(), z.number()),
+//  minerals: z.record(z.string(), z.number()),
+//});
 
 const fieldSchema = z.object({
   Name: z.string().min(1).max(100),
