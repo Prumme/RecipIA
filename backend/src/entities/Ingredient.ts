@@ -1,5 +1,3 @@
-import { Intolerance } from "./Intolerance";
-
 export enum IngredientCategory {
   Fruits = "Fruits",
   Vegetables = "Vegetables",
@@ -14,9 +12,31 @@ export enum IngredientCategory {
   HerbsSpices = "Herbs & Spices",
 }
 
+export enum Intolerance {
+  Gluten = "Gluten",
+  Lactose = "Lactose",
+  Nuts = "Nuts",
+  Soy = "Soy",
+  Eggs = "Eggs",
+  Seafood = "Seafood",
+  Sesame = "Sesame",
+  Sulfites = "Sulfites",
+  Dairy = "Dairy",
+  Nightshades = "Nightshades",
+}
+
+export interface NutritionalValues {
+  calories: number;
+  protein: number;
+  carbohydrates: number;
+  fat: number;
+  vitamins: Record<string, number>;
+  minerals: Record<string, number>;
+}
+
 export interface Ingredient {
   Name: string;
   Category: IngredientCategory;
-  NutritionalValues: string;
+  NutritionalValues: NutritionalValues;
   Intolerances: Intolerance[];
 }
