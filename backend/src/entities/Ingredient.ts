@@ -39,4 +39,5 @@ export interface Ingredient {
   Category: IngredientCategory;
   NutritionalValues: NutritionalValues;
   Intolerances: Intolerance[];
+  Image?: string;
 }

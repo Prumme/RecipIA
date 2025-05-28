@@ -22,6 +22,7 @@ const fieldSchema = z.object({
   Category: z.nativeEnum(IngredientCategory),
   NutritionalValues: z.string(),
   Intolerances: z.array(z.nativeEnum(Intolerance)).optional(),
+  Image: z.string().url().optional(),
 });
 
 export class AirtableIngredientRepository
@@ -67,6 +68,7 @@ export class AirtableIngredientRepository
         Category: ingredient.Category,
         NutritionalValues: JSON.stringify(ingredient.NutritionalValues), // serialize
         Intolerances: ingredient.Intolerances,
+        Image: ingredient.Image,
       });
       return this.convertToIngredient(this.validate(record));
     } catch (error) {
@@ -88,6 +90,7 @@ export class AirtableIngredientRepository
           ? JSON.parse(fields.NutritionalValues)
           : fields.NutritionalValues,
       Intolerances: fields.Intolerances || [],
+      Image: fields.Image,
     };
   }
 }

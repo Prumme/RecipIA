@@ -13,4 +13,5 @@ export const ingredientRequest = z.object({
     minerals: z.record(z.string(), z.number()),
   }),
   Intolerances: z.array(z.nativeEnum(Intolerance)).optional(),
+  Image: z.string().url().optional(),
 });
