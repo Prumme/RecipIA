@@ -11,6 +11,25 @@ export enum Difficulty {
   Hard = "Hard",
 }
 
+export enum Tags {
+  Vegan = "Vegan",
+  GlutenFree = "Gluten Free",
+  DairyFree = "Dairy Free",
+  NutFree = "Nut Free",
+  LowCarb = "Low Carb",
+  HighProtein = "High Protein",
+  Quick = "Quick",
+  Healthy = "Healthy",
+  Seasonal = "Seasonal",
+  NoOven = "No Oven",
+}
+
+export interface RecipeImage {
+  filename: string;
+  url: string;
+  thumbnails?: Record<"small" | "large" | "full", { url?: string } | undefined>;
+}
+
 export interface Recipe {
   Name: string;
   Slug: string;
@@ -18,13 +37,40 @@ export interface Recipe {
   Servings: number;
   DishType: DishType;
   Ingredients: string[];
-  IngredientQuantities: string[];
-  IngredientUnits: string[];
-  CompatibleIntolerances: string[];
+  IngredientsName: string[];
   PrepTime: number;
   Difficulty: Difficulty;
-  Tags: string[];
-  CreatedAt: Date;
-  isPrivate: boolean;
-  Author: string;
+  Tags: Tags[];
+  CreatedAt: string;
+  Intolerances: string[];
+  Image: RecipeImage[];
+  Compositions: string[];
+  IngredientsQuantity: number[];
+  IngredientsUnit: string[];
+  Private: boolean;
+  Author: string[];
+  AuthorName: string[];
 }
+
+export type RecipeListItem = Omit<
+  Recipe,
+  | "Instructions"
+  | "IngredientsName"
+  | "CreatedAt"
+  | "Compositions"
+  | "IngredientsQuantity"
+  | "IngredientsUnit"
+  | "Private"
+  | "Author"
+>;
+
+export type FieldToCreateRecipe = Omit<
+  Recipe,
+  | "CreatedAt"
+  | "IngredientsName"
+  | "IngredientsQuantity"
+  | "IngredientsUnit"
+  | "AuthorName"
+  | "Intolerances"
+  | "Image"
+>;

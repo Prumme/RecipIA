@@ -4,13 +4,17 @@ import { makeController } from "./Controller";
 import { loginRequest } from "./requests/loginRequest";
 import { registerRequest } from "./requests/registerRequest";
 import { ingredientRequest } from "./requests/ingredientRequest";
+import { postRecipeRequest } from "./requests/postRecipeRequest";
+import { updateRecipePrivacyRequest } from "./requests/updateRecipePrivacyRequest";
 import Airtable from "airtable";
 import session from "express-session";
 //@ts-ignore
 import fileStore from "session-file-store";
 import { AirtableUserRepository } from "../airtable/AirtableUserRepository";
 import { AirtableIngredientRepository } from "../airtable/AirtableIngredientRepository";
+import { AirtableRecipeRepository } from "../airtable/AirtableRecipeRepository";
 import { Ingredient } from "../entities/Ingredient";
+import { Recipe, FieldToCreateRecipe } from "../entities/Recipe";
 import { hidePassword, User } from "../entities/User";
 import { PaginatedCollection } from "../types/PaginatedCollection";
 import { AirtableResult } from "../airtable/AirtableResult";
@@ -40,6 +44,7 @@ export const app = express();
 const base = new Airtable({ apiKey }).base(baseId);
 const userRepository = new AirtableUserRepository(base);
 const ingredientRepository = new AirtableIngredientRepository(base);
+const recipeRepository = new AirtableRecipeRepository(base);
 
 /**
  * --- MIDLEWARES ---
@@ -219,4 +224,71 @@ app.post(
       res.status(500).json({ message: "Internal server error" });
     }
   }, ingredientRequest)
+);
+
+// Recipes routes
+app.get(
+  "/recipes/:slug",
+  makeController(async (req, res) => {
+    const { slug } = req.params;
+    if (!slug) {
+      return res.status(400).json({ message: "Slug parameter is required" });
+    }
+    try {
+      const recipe = await recipeRepository.findBySlug({ slug, cache: true });
+      if (!recipe) {
+        return res.status(404).json({ message: "Recipe not found" });
+      }
+      res.json(recipe);
+    } catch (error) {
+      console.error("Error finding recipe by slug:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  })
+);
+
+app.post(
+  "/recipes",
+  makeController(async (req, res) => {
+    try {
+      const recipe: FieldToCreateRecipe = {
+        ...req.payload,
+      };
+      const createdRecipe = await recipeRepository.create(recipe);
+      res.status(201).json(createdRecipe);
+    } catch (error) {
+      console.error("Error creating recipe:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }, postRecipeRequest)
+);
+
+app.put(
+  "/recipes/:slug/privacy",
+  makeController(async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const { private: isPrivate } = req.body;
+
+      if (typeof isPrivate !== "boolean") {
+        return res
+          .status(400)
+          .json({ message: "Private field must be a boolean" });
+      }
+
+      const updatedRecipe = await recipeRepository.updateRecipePrivacy({
+        slug,
+        private: isPrivate,
+      });
+
+      if (!updatedRecipe) {
+        return res.status(404).json({ message: "Recipe not found" });
+      }
+
+      res.json(updatedRecipe);
+    } catch (error) {
+      console.error("Error updating recipe privacy:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }, updateRecipePrivacyRequest)
 );
