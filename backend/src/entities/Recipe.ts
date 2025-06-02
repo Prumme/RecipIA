@@ -56,11 +56,12 @@ export type RecipeListItem = Omit<
   Recipe,
   | "Instructions"
   | "IngredientsName"
+  | "Ingredients"
+  | "Private"
   | "CreatedAt"
   | "Compositions"
   | "IngredientsQuantity"
   | "IngredientsUnit"
-  | "Private"
   | "Author"
 >;
 
