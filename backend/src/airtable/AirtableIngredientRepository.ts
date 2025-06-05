@@ -19,10 +19,11 @@ import { AbstractAirtableRepository } from "./AbstractAirtableRepository";
 
 const fieldSchema = z.object({
   Name: z.string().min(1).max(100),
+  Slug: z.string().min(1).max(100),
   Category: z.nativeEnum(IngredientCategory),
   NutritionalValues: z.string(),
   Intolerances: z.array(z.nativeEnum(Intolerance)).optional(),
-  Image: z.string().url().optional(),
+  Image: z.array(z.any()).optional(), // Assuming Image can be any type, adjust as needed
 });
 
 export class AirtableIngredientRepository
@@ -45,7 +46,7 @@ export class AirtableIngredientRepository
       if (name == null) return null;
       const records = await this.getTable()
         .select({
-          filterByFormula: `{Name} = '${this.escapeFilteringCharacters(name)}'`,
+          filterByFormula: `{Slug} = '${this.escapeFilteringCharacters(name)}'`,
         })
         .all();
       if (records.length !== 1) {
@@ -65,6 +66,7 @@ export class AirtableIngredientRepository
     try {
       const record = await this.getTable().create({
         Name: ingredient.Name,
+        Slug: ingredient.Slug,
         Category: ingredient.Category,
         NutritionalValues: JSON.stringify(ingredient.NutritionalValues), // serialize
         Intolerances: ingredient.Intolerances,
@@ -84,13 +86,14 @@ export class AirtableIngredientRepository
     return {
       _airtableId: id,
       Name: fields.Name,
+      Slug: fields.Slug,
       Category: fields.Category,
       NutritionalValues:
         typeof fields.NutritionalValues === "string"
           ? JSON.parse(fields.NutritionalValues)
           : fields.NutritionalValues,
       Intolerances: fields.Intolerances || [],
-      Image: fields.Image,
+      Image: fields.Image || [],
     };
   }
 }

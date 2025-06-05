@@ -36,8 +36,9 @@ export interface NutritionalValues {
 
 export interface Ingredient {
   Name: string;
+  Slug: string;
   Category: IngredientCategory;
   NutritionalValues: NutritionalValues;
   Intolerances: Intolerance[];
-  Image?: string;
+  Image?: string[];
 }
