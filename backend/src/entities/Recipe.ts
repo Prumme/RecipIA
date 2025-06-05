@@ -47,6 +47,7 @@ export interface Recipe {
   Compositions: string[];
   IngredientsQuantity: number[];
   IngredientsUnit: string[];
+  NutritionalValues: string[];
   Private: boolean;
   Author: string[];
   AuthorName: string[];
@@ -63,6 +64,7 @@ export type RecipeListItem = Omit<
   | "IngredientsQuantity"
   | "IngredientsUnit"
   | "Author"
+  | "NutritionalValues"
 >;
 
 export type FieldToCreateRecipe = Omit<
@@ -74,4 +76,5 @@ export type FieldToCreateRecipe = Omit<
   | "AuthorName"
   | "Intolerances"
   | "Image"
+  | "NutritionalValues"
 >;
