@@ -11,13 +11,7 @@ export const postRecipeRequest = z.object({
   PrepTime: z.number().int().nonnegative(),
   Difficulty: z.nativeEnum(Difficulty),
   Tags: z.array(z.nativeEnum(Tags)).default([]),
-  /* Image: z.object({
-    url: z.string().url(),
-    filename: z.string(),
-    thumbnails: z
-      .record(z.string(), z.object({ url: z.string().url().optional() }))
-      .optional(),
-  }), */
+  Image: z.array(z.any()).optional(),
   Compositions: z.array(z.string()),
   Private: z.boolean(),
   Author: z.array(z.string()),

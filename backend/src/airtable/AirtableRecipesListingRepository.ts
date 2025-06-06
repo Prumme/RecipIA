@@ -72,7 +72,6 @@ export class AirtableRecipesListingRepository
         decoratedQuery,
         "paginate"
       );
-      console.error("Records fetched:", records);
       const safeRecords = this.validateAll(records);
       const recipes = safeRecords.map((record) =>
         this.convertToRecipeListItem(record)
@@ -91,13 +90,13 @@ export class AirtableRecipesListingRepository
   }
 
   public async findByAuthor(query: {
-    authorId: string;
+    authorUsername: string;
     page: number;
     pageSize: number;
     search?: string;
     cache?: boolean;
   }): Promise<PaginatedCollection<AirtableResult<RecipeListItem>>> {
-    const { authorId, page, pageSize, search, cache } = query;
+    const { authorUsername, page, pageSize, search, cache } = query;
 
     try {
       const conditions: string[] = [];
@@ -110,8 +109,9 @@ export class AirtableRecipesListingRepository
         conditions.push(this.buildFilter(subConditions, "OR"));
       }
 
-      const safeAuthorId = this.escapeFilteringCharacters(authorId);
-      conditions.push(`FIND('${safeAuthorId}', {Author})`);
+      const safeAuthor = this.escapeFilteringCharacters(authorUsername);
+
+      conditions.push(`FIND('${safeAuthor}', {Author} & '') > 0`);
 
       const query = this.getTable().select({
         fields: [

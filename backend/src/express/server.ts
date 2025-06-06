@@ -250,16 +250,16 @@ app.get(
 );
 
 app.get(
-  "/recipes/author/:authorId",
+  "/recipes/author/:authorUsername",
   makeController(async (req, res) => {
-    const { authorId } = req.params;
-    if (!authorId) {
-      return res.status(400).json({ message: "Author ID is required" });
+    const { authorUsername } = req.params;
+    if (!authorUsername) {
+      return res.status(400).json({ message: "Author username is required" });
     }
     try {
       const { page, pageSize, cache, s: search } = req.payload;
       const recipes = await recipeListingRepository.findByAuthor({
-        authorId,
+        authorUsername: authorUsername,
         page,
         pageSize,
         search,

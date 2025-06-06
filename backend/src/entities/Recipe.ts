@@ -24,12 +24,6 @@ export enum Tags {
   NoOven = "No Oven",
 }
 
-export interface RecipeImage {
-  filename: string;
-  url: string;
-  thumbnails?: Record<"small" | "large" | "full", { url?: string } | undefined>;
-}
-
 export interface Recipe {
   Name: string;
   Slug: string;
@@ -43,7 +37,7 @@ export interface Recipe {
   Tags: Tags[];
   CreatedAt: string;
   Intolerances: string[];
-  Image: RecipeImage[];
+  Image?: string[];
   Compositions: string[];
   IngredientsQuantity: number[];
   IngredientsUnit: string[];
@@ -75,6 +69,5 @@ export type FieldToCreateRecipe = Omit<
   | "IngredientsUnit"
   | "AuthorName"
   | "Intolerances"
-  | "Image"
   | "NutritionalValues"
 >;

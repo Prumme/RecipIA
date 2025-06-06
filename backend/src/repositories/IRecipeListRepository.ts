@@ -6,7 +6,7 @@ export interface IRecipeListRepository {
     search?: string;
   }): Promise<PaginatedCollection<RecipeListItem>>;
   findByAuthor(query: {
-    authorId: string;
+    authorUsername: string;
     search?: string;
   }): Promise<PaginatedCollection<RecipeListItem>>;
 }

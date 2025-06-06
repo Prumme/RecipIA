@@ -25,17 +25,7 @@ const fieldSchema = z.object({
   Tags: z.array(z.nativeEnum(Tags)).optional(),
   CreatedAt: z.string().regex(dateRegex, "Invalid date format"),
   Intolerances: z.array(z.string()).optional(),
-  Image: z
-    .array(
-      z.object({
-        url: z.string().url(),
-        filename: z.string(),
-        thumbnails: z
-          .record(z.string(), z.object({ url: z.string().url().optional() }))
-          .optional(),
-      })
-    )
-    .optional(),
+  Image: z.array(z.any()).optional(),
   Compositions: z.array(z.string()).optional(),
   IngredientsQuantity: z.array(z.number()).optional(),
   IngredientsUnit: z.array(z.string()).optional(),
@@ -100,7 +90,7 @@ export class AirtableRecipeRepository
         PrepTime: recipe.PrepTime,
         Difficulty: recipe.Difficulty,
         Tags: recipe.Tags || [],
-        //Image: recipe.Image,
+        Image: recipe.Image,
         Compositions: recipe.Compositions || [],
         Private: recipe.Private,
         Author: recipe.Author,
