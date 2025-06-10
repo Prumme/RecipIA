@@ -7,6 +7,7 @@ import { ingredientRequest } from "./requests/ingredientRequest";
 import { postRecipeRequest } from "./requests/postRecipeRequest";
 import { updateRecipePrivacyRequest } from "./requests/updateRecipePrivacyRequest";
 import { searchRequest } from "./requests/searchRequest";
+import { compositionRequest } from "./requests/compositionRequest";
 import Airtable from "airtable";
 import session from "express-session";
 //@ts-ignore
@@ -15,6 +16,8 @@ import { AirtableUserRepository } from "../airtable/AirtableUserRepository";
 import { AirtableIngredientRepository } from "../airtable/AirtableIngredientRepository";
 import { AirtableRecipeRepository } from "../airtable/AirtableRecipeRepository";
 import { AirtableRecipesListingRepository } from "../airtable/AirtableRecipesListingRepository";
+import { AirtableCompositionRepository } from "../airtable/AirtableCompositionRepository";
+import { Composition, FieldToCreateComposition } from "../entities/Composition";
 import { Ingredient } from "../entities/Ingredient";
 import { Recipe, FieldToCreateRecipe } from "../entities/Recipe";
 import { hidePassword, User } from "../entities/User";
@@ -48,6 +51,7 @@ const userRepository = new AirtableUserRepository(base);
 const ingredientRepository = new AirtableIngredientRepository(base);
 const recipeRepository = new AirtableRecipeRepository(base);
 const recipeListingRepository = new AirtableRecipesListingRepository(base);
+const compositionRepository = new AirtableCompositionRepository(base);
 
 /**
  * --- MIDLEWARES ---
@@ -337,4 +341,28 @@ app.put(
       res.status(500).json({ message: "Internal server error" });
     }
   }, updateRecipePrivacyRequest)
+);
+
+// Compositions routes
+
+app.post(
+  "/compositions",
+  makeController(async (req, res) => {
+    const composition: FieldToCreateComposition = {
+      ...req.payload,
+    };
+    if (!composition || !composition.Recipe) {
+      return res.status(400).json({ message: "Invalid composition data" });
+    }
+
+    try {
+      const createdComposition = await compositionRepository.create(
+        composition
+      );
+      res.status(201).json(createdComposition);
+    } catch (error) {
+      console.error("Error creating composition:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }, compositionRequest)
 );
