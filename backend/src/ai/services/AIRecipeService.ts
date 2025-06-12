@@ -42,7 +42,7 @@ Return ONLY a valid JSON object in this exact format:
   "DishType": "${params.dishType}",
   "PrepTime": 15,
   "Difficulty": "Easy",
-  "Tags": ${params.tags},
+  "Tags": ${JSON.stringify(params.tags)},
   "Image": [],
   "ingredients": [
     {

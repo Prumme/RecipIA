@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { Tags } from "../../entities/Recipe";
 
 export const generateRecipeRequest = z.object({
-  tags: z.array(z.string()).min(1, "At least one tag is required"),
+  tags: z.array(z.nativeEnum(Tags)).default([]),
   ingredients: z
     .array(z.string())
     .min(1, "At least one ingredient is required"),
