@@ -10,6 +10,10 @@ import { searchRequest } from "./requests/searchRequest";
 import { compositionRequest } from "./requests/compositionRequest";
 import Airtable from "airtable";
 import session from "express-session";
+import { GeminiProvider } from "../ai/providers/GeminiProvider";
+import { RecipeGenerationService } from "../services/RecipeGenerationService";
+import { generateRecipeRequest } from "./requests/generateRecipeRequest";
+import { AIRecipeService } from "../ai/services/AIRecipeService";
 //@ts-ignore
 import fileStore from "session-file-store";
 import { AirtableUserRepository } from "../airtable/AirtableUserRepository";
@@ -39,10 +43,11 @@ declare module "express-session" {
 const apiKey = process.env.AIRTABLE_API_KEY;
 const baseId = process.env.AIRTABLE_BASE_ID;
 const secret = process.env.APP_SECRET || "secret";
+const geminiApiKey = process.env.GEMINI_API_KEY;
 
-if (!apiKey || !baseId)
+if (!apiKey || !baseId || !geminiApiKey)
   throw new Error(
-    "Missing Airtable API Key or Base ID. Please set the environment variables AIRTABLE_API_KEY and AIRTABLE_BASE_ID."
+    "Missing Airtable API Key or Base ID or Gemini API Key. Please set the environment variables AIRTABLE_API_KEY and AIRTABLE_BASE_ID and GEMINI_API_KEY."
   );
 
 export const app = express();
@@ -52,6 +57,16 @@ const ingredientRepository = new AirtableIngredientRepository(base);
 const recipeRepository = new AirtableRecipeRepository(base);
 const recipeListingRepository = new AirtableRecipesListingRepository(base);
 const compositionRepository = new AirtableCompositionRepository(base);
+
+const geminiProvider = new GeminiProvider(geminiApiKey);
+const aiRecipeService = new AIRecipeService(geminiProvider);
+const recipeGenerationService = new RecipeGenerationService(
+  aiRecipeService,
+  recipeRepository,
+  ingredientRepository,
+  compositionRepository,
+  userRepository
+);
 
 /**
  * --- MIDLEWARES ---
@@ -344,7 +359,6 @@ app.put(
 );
 
 // Compositions routes
-
 app.post(
   "/compositions",
   makeController(async (req, res) => {
@@ -365,4 +379,29 @@ app.post(
       res.status(500).json({ message: "Internal server error" });
     }
   }, compositionRequest)
+);
+
+// IA Recipe Generation route
+app.post(
+  "/generate-recipe",
+  authMiddleware,
+  makeController(async (req, res) => {
+    try {
+      const user = req.session.user;
+      if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+      const recipe = await recipeGenerationService.generateAndSaveRecipe(
+        req.payload,
+        user.Username
+      );
+
+      res.status(201).json(recipe);
+    } catch (error) {
+      console.error("Error generating recipe:", error);
+      res.status(500).json({
+        message: "An error occurred during recipe generation",
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  }, generateRecipeRequest)
 );
