@@ -47,7 +47,7 @@ export class AirtableQueryPaginatedDecorator
     [Records<any>, { hasNext: boolean; hasPrev: boolean }]
   > {
     const params = this.query._params;
-    let offset = 0;
+    let offset: string | undefined = undefined; // Changement ici: string | undefined au lieu de number
     let records = [];
     let currentPage = 1;
     do {
@@ -57,7 +57,7 @@ export class AirtableQueryPaginatedDecorator
         if (offset)
           body = {
             ...body,
-            offset,
+            offset: Number(offset), // Convert offset to number if required by type
           };
 
         const response = await this.axiosInstance.post(
@@ -65,7 +65,14 @@ export class AirtableQueryPaginatedDecorator
           body
         );
 
-        const { offset: newOffset, records: newRecords } = response.data;
+        // Définir une interface pour la réponse d'Airtable
+        interface AirtableResponse {
+          offset?: string;
+          records: any[];
+        }
+
+        const data = response.data as AirtableResponse;
+        const { offset: newOffset, records: newRecords } = data;
         offset = newOffset;
 
         if (currentPage == this.page) {
