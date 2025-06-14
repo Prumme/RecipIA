@@ -82,6 +82,7 @@ Rules:
 - Intolerances: Empty array [] or relevant intolerances, e.g. ["Gluten", "Lactose"]. If given, must be in : Gluten, Lactose, Nuts, Soy, Eggs, Seafood, Sesame, Sulfites, Dairy, Nightshades
 - Image: Always empty array []
 - Include ALL required ingredients: ${params.ingredients.join(", ")}
+- unit must always be set (if not applicable, if using a single item like egg, use "item")
 - Respond with ONLY the JSON, no extra text`;
   }
 

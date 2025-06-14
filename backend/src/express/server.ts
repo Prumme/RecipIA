@@ -14,6 +14,7 @@ import { GeminiProvider } from "../ai/providers/GeminiProvider";
 import { RecipeGenerationService } from "../services/RecipeGenerationService";
 import { generateRecipeRequest } from "./requests/generateRecipeRequest";
 import { AIRecipeService } from "../ai/services/AIRecipeService";
+import { BraveImageSearchService } from "../services/BraveImageSearchService";
 //@ts-ignore
 import fileStore from "session-file-store";
 import { AirtableUserRepository } from "../airtable/AirtableUserRepository";
@@ -44,10 +45,11 @@ const apiKey = process.env.AIRTABLE_API_KEY;
 const baseId = process.env.AIRTABLE_BASE_ID;
 const secret = process.env.APP_SECRET || "secret";
 const geminiApiKey = process.env.GEMINI_API_KEY;
+const braveSearchApiKey = process.env.BRAVE_SEARCH_API_KEY;
 
-if (!apiKey || !baseId || !geminiApiKey)
+if (!apiKey || !baseId || !geminiApiKey || !braveSearchApiKey)
   throw new Error(
-    "Missing Airtable API Key or Base ID or Gemini API Key. Please set the environment variables AIRTABLE_API_KEY and AIRTABLE_BASE_ID and GEMINI_API_KEY."
+    "Missing Airtable API Key or Base ID or Gemini API Key or Brave Search API Key. Please set the environment variables AIRTABLE_API_KEY and AIRTABLE_BASE_ID and GEMINI_API_KEY and BRAVE_SEARCH_API_KEY."
   );
 
 export const app = express();
@@ -60,12 +62,14 @@ const compositionRepository = new AirtableCompositionRepository(base);
 
 const geminiProvider = new GeminiProvider(geminiApiKey);
 const aiRecipeService = new AIRecipeService(geminiProvider);
+const braveGenerationService = new BraveImageSearchService(braveSearchApiKey);
 const recipeGenerationService = new RecipeGenerationService(
   aiRecipeService,
   recipeRepository,
   ingredientRepository,
   compositionRepository,
-  userRepository
+  userRepository,
+  braveGenerationService
 );
 
 /**
