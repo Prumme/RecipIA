@@ -6,20 +6,20 @@ interface IngredientItemProps {
   name: string;
   quantity: string;
   unit?: string;
-  imageUrl?: string;
+  url?: string;
 }
 
 const IngredientItem: React.FC<IngredientItemProps> = ({
   name,
   quantity,
   unit,
-  imageUrl,
+  url,
 }) => {
   return (
     <div className="bg-white rounded-md shadow-sm overflow-hidden max-w-32">
       <div className="aspect-square relative">
-        {imageUrl ? (
-          <Image src={imageUrl} alt={name} fill className="object-cover" />
+        {url ? (
+          <Image src={url} alt={name} fill className="object-cover" />
         ) : (
           <NoImageIcon />
         )}

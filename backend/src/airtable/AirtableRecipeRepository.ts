@@ -33,6 +33,7 @@ const fieldSchema = z.object({
   Private: z.boolean().default(false),
   Author: z.array(z.string()),
   AuthorName: z.array(z.string().min(1).max(100)),
+  IngredientsImages: z.array(z.any()).optional(),
 });
 
 export class AirtableRecipeRepository
@@ -146,6 +147,7 @@ export class AirtableRecipeRepository
       Private: fields.Private || false,
       Author: fields.Author || [],
       AuthorName: fields.AuthorName || [],
+      IngredientsImages: fields.IngredientsImages || [],
     };
   }
 }

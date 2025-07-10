@@ -1,34 +1,37 @@
 "use client";
 
 import RecipeCard from "@/components/RecipeCard";
-import type { Recipe } from "@/types/recipe.types";
+import { Recipe } from "@/types/recipe.types";
 
 import { Users, Clock, ChefHat, Tags } from "lucide-react";
 import { API_URL } from "@/core/constant";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const gridClassName =
   "grid grid-cols-[2fr_100px_100px_150px_1fr] gap-4 items-center px-6";
 
-export default function Home() {
+export default function MesRecettes() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const { user, isAuthenticated } = useAuth();
+  console.log(user);
 
   useEffect(() => {
     const fetchRecipes = async () => {
-      const response = await fetch(`${API_URL}recipes`);
+      const response = await fetch(
+        `${API_URL}recipes/author/${user?.Username}`
+      );
       const data = await response.json();
       setRecipes(data.items);
     };
     fetchRecipes();
-  }, []);
+  }, [user]);
 
   return (
     <div className="min-h-screen px-4">
       <header className="mb-8 text-center py-8">
-        <h1 className="text-3xl font-bold mb-4">Nos Recettes</h1>
-        <p className="text-gray-600">
-          Découvrez notre sélection de recettes délicieuses
-        </p>
+        <h1 className="text-3xl font-bold mb-4">Mes Recettes</h1>
+        <p className="text-gray-600">Découvrez vos recettes personnelles</p>
       </header>
 
       <main className="max-w-[90%] mx-auto">

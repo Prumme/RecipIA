@@ -4,6 +4,7 @@ import {
   AuthResponse,
   LoginCredentials,
   RegisterCredentials,
+  User,
 } from "../types/user.types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/";
@@ -15,6 +16,7 @@ export const AuthService = {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(credentials),
     });
 
@@ -23,8 +25,13 @@ export const AuthService = {
     }
 
     const data = await response.json();
-    localStorage.setItem("token", data.token);
-    return data;
+
+    // Stocker le token dans localStorage
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    }
+
+    return { user: data.user, token: data.token };
   },
 
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
@@ -33,6 +40,7 @@ export const AuthService = {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(credentials),
     });
 
@@ -41,8 +49,36 @@ export const AuthService = {
     }
 
     const data = await response.json();
-    localStorage.setItem("token", data.token);
-    return data;
+
+    // Stocker le token dans localStorage
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    }
+
+    return { user: data.user, token: data.token };
+  },
+
+  async getCurrentUser(): Promise<User> {
+    const token = this.getToken();
+
+    if (!token) {
+      throw new Error("Aucun token d'authentification trouvé");
+    }
+
+    const response = await fetch(`${API_URL}user`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Impossible de récupérer l'utilisateur");
+    }
+
+    return await response.json();
   },
 
   logout(): void {

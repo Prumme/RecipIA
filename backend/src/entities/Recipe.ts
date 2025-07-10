@@ -45,6 +45,7 @@ export interface Recipe {
   Private: boolean;
   Author: string[];
   AuthorName: string[];
+  IngredientsImages?: string[];
 }
 
 export type RecipeListItem = Omit<
@@ -59,6 +60,7 @@ export type RecipeListItem = Omit<
   | "IngredientsUnit"
   | "Author"
   | "NutritionalValues"
+  | "IngredientsImages"
 >;
 
 export type FieldToCreateRecipe = Omit<

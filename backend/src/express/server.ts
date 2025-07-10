@@ -32,8 +32,9 @@ import cors from "cors";
 import { paginatedRequest } from "./requests/paginatedRequest";
 import { forceCacheRequest } from "./requests/forceCacheRequest";
 import { EventObserver } from "../events/EventObserver";
-import { isAuth } from "./utils/isAuth";
+import { isAuth, getUserFromToken } from "./utils/isAuth";
 import { ClearCacheEvent } from "../events/ClearCacheEvent";
+import { generateToken } from "./utils/jwt";
 
 declare module "express-session" {
   interface SessionData {
@@ -122,12 +123,22 @@ app.get(
   authMiddleware,
   makeController(async (req, res) => {
     try {
-      const user = req.session.user;
-      if (!user) return res.status(401).json({ message: "Unauthorized" });
+      const tokenPayload = getUserFromToken(req);
+      if (!tokenPayload)
+        return res.status(401).json({ message: "Unauthorized" });
+
+      // Récupérer l'utilisateur depuis la base de données avec les informations du token
+      const user = await userRepository.findByEmail({
+        email: tokenPayload.email,
+      });
+      if (!user) return res.status(401).json({ message: "User not found" });
+
       res.json(hidePassword(user));
     } catch (e) {
       console.error(e);
-      res.status(500).json({ message: "An error occurred during login" });
+      res
+        .status(500)
+        .json({ message: "An error occurred during authentication" });
     }
   })
 );
@@ -147,8 +158,9 @@ app.post(
           .status(401)
           .json({ message: "Invalid credentials (password)" });
       }
-      req.session.user = user;
-      res.json(hidePassword(user));
+
+      const token = generateToken(user);
+      res.json({ user: hidePassword(user), token });
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: "An error occurred during login" });
@@ -185,11 +197,11 @@ app.post(
         Password: hashedPassword,
       });
 
-      // Set the session
-      req.session.user = newUser;
+      // Generate JWT token
+      const token = generateToken(newUser);
 
-      // Return the user without password
-      res.status(201).json(hidePassword(newUser));
+      // Return the user without password and token
+      res.status(201).json({ user: hidePassword(newUser), token });
     } catch (e) {
       console.error(e);
       res
@@ -393,15 +405,17 @@ app.post(
   authMiddleware,
   makeController(async (req, res) => {
     try {
-      const user = req.session.user;
-      if (!user) return res.status(401).json({ message: "Unauthorized" });
+      const tokenPayload = getUserFromToken(req);
+      if (!tokenPayload)
+        return res.status(401).json({ message: "Unauthorized" });
 
       const recipe = await recipeGenerationService.generateAndSaveRecipe(
         req.payload,
-        user.Username
+        tokenPayload.username
       );
 
       res.status(201).json(recipe);
+      EventObserver.getInstance().emit(ClearCacheEvent);
     } catch (error) {
       console.error("Error generating recipe:", error);
       res.status(500).json({

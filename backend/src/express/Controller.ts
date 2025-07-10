@@ -40,6 +40,7 @@ export const makeController = <T extends ZodType>(
 
       if (!payload.success) {
         if (onError) onError(res);
+        console.log(payload.error);
         return res.status(422).send("Bad request");
       }
 

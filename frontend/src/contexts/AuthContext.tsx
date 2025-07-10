@@ -46,13 +46,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const token = AuthService.getToken();
-    if (token) {
-      setIsAuthenticated(true);
-      // Ici, vous pourriez faire un appel API pour récupérer les informations de l'utilisateur
-      // avec le token stocké
-    }
-    setLoading(false);
+    const checkAuth = async () => {
+      const token = AuthService.getToken();
+      if (token) {
+        try {
+          const userData = await AuthService.getCurrentUser();
+          setUser(userData);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération de l'utilisateur:",
+            error
+          );
+          // Si l'appel échoue, on nettoie le token et on déconnecte l'utilisateur
+          AuthService.logout();
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      }
+      setLoading(false);
+    };
+
+    checkAuth();
   }, []);
 
   const login = async (credentials: LoginCredentials) => {

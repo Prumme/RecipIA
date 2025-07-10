@@ -1,12 +1,6 @@
 import React from "react";
 import IngredientItem from "./IngredientItem";
-
-interface Ingredient {
-  name: string;
-  quantity: string;
-  unit?: string;
-  imageUrl?: string;
-}
+import { Ingredient } from "@/types/recipe.types";
 
 interface IngredientsListProps {
   ingredients: Ingredient[];
@@ -20,10 +14,10 @@ const IngredientsList: React.FC<IngredientsListProps> = ({ ingredients }) => {
         {ingredients.map((ingredient, index) => (
           <IngredientItem
             key={index}
-            name={ingredient.name}
-            quantity={ingredient.quantity}
-            unit={ingredient.unit}
-            imageUrl={ingredient.imageUrl}
+            name={ingredient.IngredientsName}
+            quantity={ingredient.IngredientsQuantity}
+            unit={ingredient.IngredientsUnit}
+            url={ingredient.IngredientsImages?.url}
           />
         ))}
       </div>

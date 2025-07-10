@@ -75,7 +75,7 @@ export class BraveImageSearchService {
   }
 
   async searchIngredientImage(ingredientName: string): Promise<string | null> {
-    const query = `${ingredientName} ingredient food`;
+    const query = `${ingredientName} plain ingredient`;
     const results = await this.searchImages(query, 1);
     const imageUrl = results.length > 0 ? results[0].url : null;
     return imageUrl;

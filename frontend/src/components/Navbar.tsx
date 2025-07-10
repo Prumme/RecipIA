@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogIn, LogOut, Book, ChefHat } from "lucide-react";
+import { LogIn, LogOut, Book, ChefHat, Plus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function Navbar() {
@@ -24,6 +24,20 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center space-x-4">
+            {isAuthenticated && (
+              <Link
+                href="/recipe/create"
+                className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium ${
+                  pathname === "/recipe/create"
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                <Plus className="h-5 w-5" />
+                <span>Create Recipe</span>
+              </Link>
+            )}
+
             {isAuthenticated && (
               <Link
                 href="/mes-recettes"
