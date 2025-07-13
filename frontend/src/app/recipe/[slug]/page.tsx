@@ -86,11 +86,11 @@ export default function RecipePage({ params }: PageProps) {
           <div className="flex flex-wrap gap-6 text-gray-600">
             <div className="flex items-center gap-2">
               <Users size={20} />
-              <span>{recipe?.Servings} lovely humans</span>
+              <span>{recipe?.Servings} servings</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock size={20} />
-              <span>{recipe?.PrepTime} minutes of culinary joy</span>
+              <span>{recipe?.PrepTime} minutes</span>
             </div>
             <div className="flex items-center gap-2">
               <ChefHat size={20} />

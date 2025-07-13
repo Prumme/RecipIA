@@ -1,36 +1,48 @@
 "use client";
 
 import RecipeCard from "@/components/RecipeCard";
-import { Recipe } from "@/types/recipe.types";
+import { SearchFilters } from "@/components/SearchFilters";
+import { SearchResultsState, RecipeListSkeleton } from "@/components/SearchResultsState";
+import { useRecipeSearch } from "@/hooks/useRecipeSearch";
 
 import { Users, Clock, ChefHat, Tags } from "lucide-react";
-import { API_URL } from "@/core/constant";
-import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const gridClassName =
   "grid grid-cols-[2fr_100px_100px_150px_1fr] gap-4 items-center px-6";
 
 export default function MesRecettes() {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const { user } = useAuth();
-
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      const response = await fetch(
-        `${API_URL}recipes/author/${user?.Username}`
-      );
-      const data = await response.json();
-      setRecipes(data.items);
-    };
-    fetchRecipes();
-  }, [user]);
+  
+  const {
+    query,
+    recipes,
+    isLoading,
+    isSearching,
+    error,
+    totalResults,
+    search,
+    clearSearch,
+  } = useRecipeSearch({
+    authorUsername: user?.Username,
+  });
 
   return (
     <div className="min-h-screen px-4">
       <header className="mb-8 text-center py-8">
-        <h1 className="text-3xl font-bold mb-4">Mes Recettes</h1>
-        <p className="text-gray-600">Découvrez vos recettes personnelles</p>
+        <h1 className="text-3xl font-bold mb-4">My Recipes</h1>
+        <p className="text-gray-600 mb-6">Discover your personal recipes</p>
+        
+        {/* Search and Filters */}
+        <SearchFilters
+          query={query}
+          searchPlaceholder="Search your recipes..."
+          isSearching={isSearching}
+          resultsCount={totalResults}
+          onSearch={search}
+          onClear={clearSearch}
+          disabled={isLoading}
+        />
       </header>
 
       <main className="max-w-[90%] mx-auto">
@@ -39,26 +51,39 @@ export default function MesRecettes() {
           <div
             className={`${gridClassName} py-3 bg-gray-50 border-b border-gray-200 font-medium text-sm text-gray-500`}
           >
-            <div>Nom</div>
+            <div>Name</div>
             <div className="flex items-center gap-2">
               <Users size={16} />
-              <span>Pers.</span>
+              <span>Servings</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock size={16} />
-              <span>Temps</span>
+              <span>Time</span>
             </div>
-            <div>Difficulté</div>
+            <div>Difficulty</div>
             <div className="flex items-center gap-2">
               <Tags size={16} />
               <span>Tags</span>
             </div>
           </div>
 
-          {/* Corps de la table */}
-          {recipes.map((recipe, index) => (
-            <RecipeCard key={index} recipe={recipe} className={gridClassName} />
-          ))}
+          {/* Search Results */}
+          <SearchResultsState
+            isLoading={isLoading}
+            isSearching={isSearching}
+            query={query}
+            resultsCount={totalResults}
+            error={error}
+          >
+            {/* Corps de la table */}
+            {isLoading ? (
+              <RecipeListSkeleton count={5} />
+            ) : (
+              recipes.map((recipe, index) => (
+                <RecipeCard key={recipe.Slug || index} recipe={recipe} className={gridClassName} />
+              ))
+            )}
+          </SearchResultsState>
         </div>
       </main>
     </div>

@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <NavbarWrapper />
-          <main className="w-full min-h-screen pt-16">{children}</main>
+          <main className="w-full min-h-screen">{children}</main>
         </AuthProvider>
       </body>
     </html>
