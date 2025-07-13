@@ -13,8 +13,7 @@ const gridClassName =
 
 export default function MesRecettes() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const { user, isAuthenticated } = useAuth();
-  console.log(user);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchRecipes = async () => {

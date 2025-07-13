@@ -28,8 +28,10 @@ import {
   Tags as TagType,
   Intolerance as IntoleranceType,
   DishType,
+  Recipe,
 } from "@/types/recipe.types";
 import { API_URL } from "@/core/constant";
+import { useRouter } from "next/navigation";
 
 interface RecipeProps {
   ingredients: string[];
@@ -40,6 +42,7 @@ interface RecipeProps {
 }
 
 export default function CreateRecipePage() {
+  const router = useRouter();
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
   const [selectedDishType, setSelectedDishType] = useState<DishType>(
     DishType.MainCourse
@@ -96,19 +99,19 @@ export default function CreateRecipePage() {
     }
     const interval = setInterval(() => {
       setProgress((oldProgress) => {
-        if (oldProgress >= 100) {
+        if (oldProgress >= 90) {
           clearInterval(interval);
-          setIsLoading(false);
-          return 100;
+          return 90;
         }
-        return oldProgress + 10;
+        const increment = Math.floor(Math.random() * 7) + 4; // Random between 4-10
+        return oldProgress + increment;
       });
-    }, 500);
+    }, Math.floor(Math.random() * 501) + 500);
 
     return () => clearInterval(interval);
   }, [isLoading]);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (isLoading) return;
 
@@ -122,9 +125,7 @@ export default function CreateRecipePage() {
       numberOfPersons: participants,
     };
 
-    console.log(recipe);
-
-    fetch(`${API_URL}generate-recipe`, {
+    const response = await fetch(`${API_URL}generate-recipe`, {
       method: "POST",
       body: JSON.stringify(recipe),
       headers: {
@@ -132,6 +133,12 @@ export default function CreateRecipePage() {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
+
+    const data: Recipe = await response.json();
+    setProgress(100);
+    setTimeout(() => {
+      router.push(`/recipe/${data.Slug}`);
+    }, 1000);
   }
 
   return (

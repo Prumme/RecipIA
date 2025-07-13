@@ -42,8 +42,6 @@ export default function RecipePage({ params }: PageProps) {
     return ingredientsList;
   };
 
-  console.log(createIngredients(recipe?.Ingredients || []));
-
   if (!recipe) return <div>Loading...</div>;
 
   return (

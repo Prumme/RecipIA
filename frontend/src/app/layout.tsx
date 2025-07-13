@@ -25,13 +25,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // TODO: Implémenter la logique d'authentification réelle
-  const isAuthenticated = false;
-  const handleLogout = () => {
-    // TODO: Implémenter la logique de déconnexion
-    console.log("Déconnexion");
-  };
-
   return (
     <html lang="fr">
       <body
