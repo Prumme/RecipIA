@@ -25,9 +25,9 @@ export default function RegisterPage() {
     } catch (error: any) {
       setError(
         error.message ||
-          "Une erreur est survenue lors de l'inscription. Veuillez réessayer."
+          "An error occurred during registration, please try again."
       );
-      console.error("Erreur d'inscription:", error);
+      console.error("Registration error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -39,15 +39,15 @@ export default function RegisterPage() {
         <div className="bg-white p-8 rounded-lg shadow-md">
           <div>
             <h2 className="text-center text-3xl font-extrabold text-gray-900">
-              Créer un compte
+              Create an account
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
-              Ou{" "}
+              Or{" "}
               <Link
                 href="/login"
                 className="font-medium text-primary hover:text-primary/90"
               >
-                connectez-vous à votre compte
+                login to your account
               </Link>
             </p>
           </div>
@@ -60,7 +60,7 @@ export default function RegisterPage() {
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
                 <label htmlFor="username" className="sr-only">
-                  Nom d'utilisateur
+                  Username
                 </label>
                 <input
                   id="username"
@@ -68,7 +68,7 @@ export default function RegisterPage() {
                   type="text"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary/90 focus:border-primary/90 focus:z-10 sm:text-sm"
-                  placeholder="Nom d'utilisateur"
+                  placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={isLoading}
@@ -76,7 +76,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label htmlFor="email" className="sr-only">
-                  Adresse email
+                  Email address
                 </label>
                 <input
                   id="email"
@@ -85,7 +85,7 @@ export default function RegisterPage() {
                   autoComplete="email"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary/90 focus:border-primary/90 focus:z-10 sm:text-sm"
-                  placeholder="Adresse email"
+                  placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
@@ -93,7 +93,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label htmlFor="password" className="sr-only">
-                  Mot de passe
+                  Password
                 </label>
                 <input
                   id="password"
@@ -102,7 +102,7 @@ export default function RegisterPage() {
                   autoComplete="new-password"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary/90 focus:border-primary/90 focus:z-10 sm:text-sm"
-                  placeholder="Mot de passe"
+                  placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
@@ -116,7 +116,7 @@ export default function RegisterPage() {
                 disabled={isLoading}
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover transition duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Inscription en cours..." : "S'inscrire"}
+                {isLoading ? "Registering..." : "Register"}
               </button>
             </div>
           </form>

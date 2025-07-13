@@ -22,8 +22,8 @@ export default function LoginPage() {
       await login({ email, password });
       router.push("/");
     } catch (error) {
-      setError("Identifiants incorrects. Veuillez réessayer.");
-      console.error("Erreur de connexion:", error);
+      setError("Incorrect email or password, please try again.");
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -35,15 +35,15 @@ export default function LoginPage() {
         <div className="bg-white p-8 rounded-lg shadow-md">
           <div>
             <h2 className="text-center text-3xl font-extrabold text-gray-900">
-              Connexion à votre compte
+              Login to your account
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
-              Ou{" "}
+              Or{" "}
               <Link
                 href="/register"
                 className="font-medium text-primary hover:text-primary/90"
               >
-                créez un nouveau compte
+                create a new account
               </Link>
             </p>
           </div>
@@ -56,7 +56,7 @@ export default function LoginPage() {
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
                 <label htmlFor="email" className="sr-only">
-                  Adresse email
+                  Email address
                 </label>
                 <input
                   id="email"
@@ -65,14 +65,14 @@ export default function LoginPage() {
                   autoComplete="email"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary/90 focus:border-primary/90 focus:z-10 sm:text-sm"
-                  placeholder="Adresse email"
+                  placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>
                 <label htmlFor="password" className="sr-only">
-                  Mot de passe
+                  Password
                 </label>
                 <input
                   id="password"
@@ -81,7 +81,7 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   required
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary/90 focus:border-primary/90 focus:z-10 sm:text-sm"
-                  placeholder="Mot de passe"
+                  placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -100,7 +100,7 @@ export default function LoginPage() {
                   htmlFor="remember-me"
                   className="ml-2 block text-sm text-gray-900"
                 >
-                  Se souvenir de moi
+                  Remember me
                 </label>
               </div>
 
@@ -109,7 +109,7 @@ export default function LoginPage() {
                   href="#"
                   className="font-medium text-primary hover:text-primary/90"
                 >
-                  Mot de passe oublié ?
+                  Forgot password?
                 </a>
               </div>
             </div>
@@ -120,7 +120,7 @@ export default function LoginPage() {
                 disabled={isLoading}
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover transition duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Connexion en cours..." : "Se connecter"}
+                {isLoading ? "Logging in..." : "Login"}
               </button>
             </div>
           </form>

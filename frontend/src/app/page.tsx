@@ -25,9 +25,9 @@ export default function Home() {
   return (
     <div className="min-h-screen px-4">
       <header className="mb-8 text-center py-8">
-        <h1 className="text-3xl font-bold mb-4">Nos Recettes</h1>
+        <h1 className="text-3xl font-bold mb-4">All Recipes</h1>
         <p className="text-gray-600">
-          Découvrez notre sélection de recettes délicieuses
+          Discover our selection of delicious recipes
         </p>
       </header>
 
@@ -40,13 +40,13 @@ export default function Home() {
             <div>Nom</div>
             <div className="flex items-center gap-2">
               <Users size={16} />
-              <span>Pers.</span>
+              <span>Servings</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock size={16} />
-              <span>Temps</span>
+              <span>Time</span>
             </div>
-            <div>Difficulté</div>
+            <div>Difficulty</div>
             <div className="flex items-center gap-2">
               <Tags size={16} />
               <span>Tags</span>

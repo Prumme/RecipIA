@@ -28,11 +28,11 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
         <AuthProvider>
           <NavbarWrapper />
-          <main className="w-screen h-screen absolute top-0">{children}</main>
+          <main className="w-full min-h-screen pt-16">{children}</main>
         </AuthProvider>
       </body>
     </html>
