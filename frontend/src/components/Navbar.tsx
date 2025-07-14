@@ -40,9 +40,9 @@ export default function Navbar() {
 
             {isAuthenticated && (
               <Link
-                href="/mes-recettes"
+                href="/myrecipes"
                 className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium ${
-                  pathname === "/mes-recettes"
+                  pathname === "/myrecipes"
                     ? "bg-gray-100 text-gray-900"
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 }`}
