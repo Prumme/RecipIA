@@ -5,7 +5,7 @@ import { SearchFilters } from "@/components/SearchFilters";
 import { SearchResultsState, RecipeListSkeleton } from "@/components/SearchResultsState";
 import { useRecipeSearch } from "@/hooks/useRecipeSearch";
 
-import { Users, Clock, ChefHat, Tags } from "lucide-react";
+import { Users, Clock, Tags } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 const gridClassName =

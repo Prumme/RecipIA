@@ -78,7 +78,8 @@ Rules:
 - Slug: lowercase, no spaces, use hyphens
 - Category: Must be one of: Fruits, Vegetables, Grains & Cereals, Legumes & Pulses, Dairy & Alternatives, Meat & Poultry, Fish & Seafood, Eggs, Nuts & Seeds, Fats & Oils, Herbs & Spices
 - Difficulty: Must be one of: Easy, Medium, Hard
-- NutritionalValues: Realistic values per 100g. calories, protein, carbohydrates and fat in grams, vitamins and minerals in mg.
+- unit: Must be one of: g, ml, item (for single items like egg, apple, etc.), cup, tablespoon, teaspoon
+- NutritionalValues: Realistic values per 100g, 100ml, 1 item, 1 cup, 1 tablespoon, 1 teaspoon depending on the unit (e.g., if unit is "item", use values for 1 item). calories, protein, carbohydrates and fat in grams, vitamins and minerals in mg.
 - Intolerances: Empty array [] or relevant intolerances, e.g. ["Gluten", "Lactose"]. If given, must be in : Gluten, Lactose, Nuts, Soy, Eggs, Seafood, Sesame, Sulfites, Dairy, Nightshades
 - Image: Always empty array []
 - Include ALL required ingredients: ${params.ingredients.join(", ")}

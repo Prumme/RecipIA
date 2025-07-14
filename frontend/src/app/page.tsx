@@ -48,7 +48,7 @@ export default function Home() {
           <div
             className={`${gridClassName} py-3 bg-gray-50 border-b border-gray-200 font-medium text-sm text-gray-500`}
           >
-            <div>Nom</div>
+            <div>Name</div>
             <div className="flex items-center gap-2">
               <Users size={16} />
               <span>Servings</span>
