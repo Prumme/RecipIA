@@ -48,6 +48,7 @@ export interface Recipe {
   Tags: Tags[];
   Slug: string;
   Instructions: string;
+  NutritionalValues?: string[]; // Valeurs JSON nutritionnelles par ingrédient
 }
 
 export interface Ingredient {
@@ -55,4 +56,38 @@ export interface Ingredient {
   IngredientsQuantity: string;
   IngredientsUnit?: string;
   IngredientsImages?: { url: string };
+}
+
+// ===== NUTRITIONAL VALUES INTERFACES =====
+
+export interface NutritionalValues {
+  calories: number;
+  protein: number;
+  carbohydrates: number;
+  fat: number;
+  vitamins: Record<string, number>;
+  minerals: Record<string, number>;
+}
+
+export interface IngredientNutrition {
+  ingredientName: string;
+  quantity: number;
+  unit: string;
+  nutritionalValues: NutritionalValues;
+  calculatedValues: NutritionalValues; // Valeurs calculées selon la quantité réelle
+}
+
+export interface RecipeNutrition {
+  totalValues: NutritionalValues; // Valeurs totales de la recette
+  perServing: NutritionalValues; // Valeurs par portion
+  ingredients: IngredientNutrition[]; // Détail par ingrédient
+}
+
+// Types pour les unités de mesure nutritionnelles
+export type NutritionUnit = "g" | "ml" | "item" | "cup" | "tablespoon" | "teaspoon";
+
+// Interface étendue de Recipe pour inclure les valeurs nutritionnelles
+export interface RecipeWithNutrition extends Recipe {
+  NutritionalValues: string[]; // Les valeurs JSON stringifiées comme vous les recevez
+  nutrition?: RecipeNutrition; // Les valeurs calculées (optionnel, calculé côté client)
 }

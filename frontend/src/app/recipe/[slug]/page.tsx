@@ -6,6 +6,8 @@ import { Clock, Users, ChefHat, Tag, AlertCircle } from "lucide-react";
 import { API_URL } from "@/core/constant";
 import { Ingredient, Recipe } from "@/types/recipe.types";
 import Instructions from "@/components/Instructions";
+import NutritionSummary from "@/components/NutritionSummary";
+import NutritionDetails from "@/components/NutritionDetails";
 
 // This mighty function shall later be replaced by a true API summoner
 
@@ -99,6 +101,8 @@ export default function RecipePage({ params }: PageProps) {
           </div>
         </header>
 
+        
+
         {/* The Mighty Grid of Culinary Knowledge */}
         <div className="lg:grid lg:grid-cols-[400px_1fr] lg:gap-8">
           {/* Ingredient Shrine - fixed on large scrollables */}
@@ -113,6 +117,28 @@ export default function RecipePage({ params }: PageProps) {
             <Instructions instructions={recipe?.Instructions} />
           </section>
         </div>
+
+
+        {/* Nutritional Information Section */}
+        {recipe?.NutritionalValues?.length && (
+          <section className="mt-8 space-y-6">
+            <NutritionSummary
+              ingredientNames={recipe.IngredientsName}
+              quantities={recipe.IngredientsQuantity}
+              units={recipe.IngredientsUnit}
+              nutritionalValuesJson={recipe.NutritionalValues}
+              servings={recipe.Servings}
+            />
+            <NutritionDetails
+              ingredientNames={recipe.IngredientsName}
+              quantities={recipe.IngredientsQuantity}
+              units={recipe.IngredientsUnit}
+              nutritionalValuesJson={recipe.NutritionalValues}
+              servings={recipe.Servings}
+            />
+          </section>
+        )}
+
       </div>
     </div>
   );
