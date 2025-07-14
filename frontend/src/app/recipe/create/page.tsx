@@ -134,11 +134,25 @@ export default function CreateRecipePage() {
       },
     });
 
-    const data: Recipe = await response.json();
-    setProgress(100);
-    setTimeout(() => {
-      router.push(`/recipe/${data.Slug}`);
-    }, 1000);
+    try{
+      const data: Recipe = await response.json();
+
+      if (!response.ok) {
+        console.error("Failed to generate recipe:", data);
+        throw new Error("Failed to generate recipe");
+      }
+      setProgress(100);
+      setTimeout(() => {
+        router.push(`/recipe/${data.Slug}`);
+      }, 1000);
+    }catch (error) {
+      alert("Failed to generate recipe");
+      setProgress(0);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+    
   }
 
   return (
