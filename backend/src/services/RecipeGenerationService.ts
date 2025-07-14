@@ -58,6 +58,9 @@ export class RecipeGenerationService {
 
           console.log(`Ingredient image URL found: ${ingredientImageUrl}`);
 
+          // Wait 1.1 seconds to respect API rate limit (1 call/second)
+          await new Promise(resolve => setTimeout(resolve, 1100));
+
           // Direct mapping - no conversion needed!
           const { quantity, unit, ...ingredientData } = aiIngredient;
           const ingredientToCreate = {
@@ -74,6 +77,9 @@ export class RecipeGenerationService {
 
       // 3. Create recipe following your existing structure
       console.log("Creating recipe...");
+
+      // Wait before recipe image search to respect API rate limit
+      await new Promise(resolve => setTimeout(resolve, 1100));
 
       const recipeImageUrl = await this.imageSearchService.searchRecipeImage(
         aiRecipeData.Name

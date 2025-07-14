@@ -33,7 +33,7 @@ Requirements:
     }
 - Number of servings: ${params.numberOfPersons}
 
-Return ONLY a valid JSON object in this exact format:
+Return ONLY a valid JSON object in this exact format with multiple ingredient examples:
 {
   "Name": "Recipe name",
   "Slug": "recipe-name",
@@ -47,43 +47,105 @@ Return ONLY a valid JSON object in this exact format:
   "ingredients": [
     {
       "Name": "Tomato",
-      "Slug": "tomato",
+      "Slug": "tomato", 
       "Category": "Vegetables",
       "NutritionalValues": {
         "calories": 18,
         "protein": 0.9,
         "carbohydrates": 3.9,
         "fat": 0.2,
-        "vitamins": {
-          "Vitamin C": 12.5,
-          "Vitamin K": 7.2,
-          "Vitamin A": 38.2,
-          "Folate": 13.7,
-          "Vitamin E": 0.5
-        },
-        "minerals": {
-          "Potassium": 215.7
-        }
+        "vitamins": {"Vitamin C": 12.5},
+        "minerals": {"Potassium": 215.7}
       },
       "Intolerances": [],
       "Image": [],
       "quantity": 200,
       "unit": "g"
+    },
+    {
+      "Name": "Paprika",
+      "Slug": "paprika",
+      "Category": "Herbs & Spices", 
+      "NutritionalValues": {
+        "calories": 6,
+        "protein": 0.3,
+        "carbohydrates": 1.2,
+        "fat": 0.3,
+        "vitamins": {"Vitamin A": 21.8, "Vitamin C": 0.1},
+        "minerals": {"Potassium": 50.4}
+      },
+      "Intolerances": [],
+      "Image": [],
+      "quantity": 2,
+      "unit": "teaspoon"
+    },
+    {
+      "Name": "Olive Oil",
+      "Slug": "olive-oil",
+      "Category": "Fats & Oils",
+      "NutritionalValues": {
+        "calories": 119,
+        "protein": 0,
+        "carbohydrates": 0,
+        "fat": 13.5,
+        "vitamins": {"Vitamin E": 1.9},
+        "minerals": {}
+      },
+      "Intolerances": [],
+      "Image": [],
+      "quantity": 3,
+      "unit": "tablespoon"
     }
   ]
 }
 
-Rules:
+CRITICAL NUTRITIONAL VALUES RULES - READ CAREFULLY:
+
+The NutritionalValues field MUST be calculated differently based on the unit:
+
+1. For unit "g" or "ml": 
+   - Provide values per 100g or 100ml (standard reference)
+   - Example above: 200g tomato → values per 100g tomato
+
+2. For unit "teaspoon":
+   - Provide values per 1 teaspoon (approximately 2-5g depending on ingredient)
+   - Example above: 2 teaspoons paprika → values per 1 teaspoon paprika (~6 calories)
+   - DO NOT use 100g values for spices in teaspoons!
+
+3. For unit "tablespoon": 
+   - Provide values per 1 tablespoon (approximately 15ml)
+   - Example above: 3 tablespoons olive oil → values per 1 tablespoon (~119 calories)
+   - DO NOT use 100ml values for ingredients in tablespoons!
+
+4. For unit "item":
+   - Provide values per 1 item (1 egg, 1 apple, etc.)
+
+5. For unit "cup":
+   - Provide values per 1 cup
+
+NOTICE THE DIFFERENT CALORIE VALUES:
+- Tomato (100g): 18 calories
+- Paprika (1 teaspoon): 6 calories  
+- Olive oil (1 tablespoon): 119 calories
+
+These are VERY different because they represent different base units!
+
+Other Rules:
 - Name: Capitalize first letter, simple ingredient names, singular form (e.g., "Tomato", not "Tomatoes")
 - Slug: lowercase, no spaces, use hyphens
 - Category: Must be one of: Fruits, Vegetables, Grains & Cereals, Legumes & Pulses, Dairy & Alternatives, Meat & Poultry, Fish & Seafood, Eggs, Nuts & Seeds, Fats & Oils, Herbs & Spices
 - Difficulty: Must be one of: Easy, Medium, Hard
 - unit: Must be one of: g, ml, item (for single items like egg, apple, etc.), cup, tablespoon, teaspoon
-- NutritionalValues: Realistic values per 100g, 100ml, 1 item, 1 cup, 1 tablespoon, 1 teaspoon depending on the unit (e.g., if unit is "item", use values for 1 item). calories, protein, carbohydrates and fat in grams, vitamins and minerals in mg.
 - Intolerances: Empty array [] or relevant intolerances, e.g. ["Gluten", "Lactose"]. If given, must be in : Gluten, Lactose, Nuts, Soy, Eggs, Seafood, Sesame, Sulfites, Dairy, Nightshades
 - Image: Always empty array []
 - Include ALL required ingredients: ${params.ingredients.join(", ")}
 - unit must always be set (if not applicable, if using a single item like egg, use "item")
+
+DO NOT CONFUSE THE UNITS!
+- 1 teaspoon paprika ≠ 100g paprika
+- 1 tablespoon oil ≠ 100ml oil
+- Use realistic small values for teaspoons/tablespoons!
+
 - Respond with ONLY the JSON, no extra text`;
   }
 

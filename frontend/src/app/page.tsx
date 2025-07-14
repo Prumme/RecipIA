@@ -43,7 +43,7 @@ export default function Home() {
       </header>
 
       <main className="max-w-[90%] mx-auto">
-        <div className="bg-white rounded-lg overflow-hidden border border-gray-200">
+        <div className="bg-white rounded-lg overflow-hidden border border-gray-200 mb-8">
           {/* Header de la table */}
           <div
             className={`${gridClassName} py-3 bg-gray-50 border-b border-gray-200 font-medium text-sm text-gray-500`}
